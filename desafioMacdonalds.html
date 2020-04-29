@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Desafio Macdonalds</title>
+    <style>
+        .nav-pills .pill .nav-link:not(.active) {
+            background-color: white;
+            color: black;
+        }
+
+        .nav-pills .pill .nav-link {
+            background-color: black;
+            color: white;
+        }
+
+        .tableFixHead {
+            overflow-y: auto;
+            height: 282px;
+        }
+
+        .tableFixHead thead th {
+            position: sticky;
+            top: 0;
+        }
+
+        .tab-pane {
+            height: 43vh;
+        }
+
+        /* Just common table stuff. Really. */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th {
+            background: black;
+            color: white;
+        }
+
+        tr {
+            background-color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="p-2" style="background-color: black; color: white;">Desafio Mcdonalds</h1>
+    <ul class="nav nav-pills nav-fill fixed-top" id="navBar" role="tablist" style="margin-top: 62px;">
+        <li class="nav-item pill"><a class="nav-link active" id="novoPedido-tab" data-toggle="tab"
+                href="#novoPedido-tab-content" role="tab" aria-controls="novoPedido-tab" aria-selected="true">Novo
+                Pedido</a></li>
+        <li class="nav-item pill"><a class="nav-link id=" cozinha-tab" data-toggle="tab" href="#cozinha-tab-content"
+                role="tab" aria-controls="cozinha-tab" aria-selected="true">Serviço de Cozinha</a></li>
+        <li class="nav-item pill"><a class="nav-link" id="pedidosActivos-tab" data-toggle="tab"
+                href="#pedidosActivos-tab-content" role="tab" aria-controls="pedidosActivos-tab"
+                aria-selected="true">Tabela Pedidos Activos</a></li>
+    </ul>
+
+    <div class="tab-content" style="padding: 20rem!important; margin-top: -15rem!important;" id="myTablesContent">
+        <div class="tab-pane fade show active" id="novoPedido-tab-content" role="tabpanel"
+            aria-labelledby="novoPedido-tab">
+            <form name="myform" class="container p-3" id="pedidoForm" onsubmit="">
+                <div class="form-group row">
+                    <h6 class="col-sm-12 p-0">Nome do Cliente:</h6>
+                    <input class="form-control col-sm-12" id="inputNome" type="text" placeholder="  Nome do Cliente"
+                        required>
+                </div>
+                <div class="form-group row" id="rowArtigo">
+                    <div class="col-sm-8 p-0">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h6>Artigo:</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <select class="custom-select" id="inputArtigo" onchange="escolheArtigo()">
+                                    <option value="sanduiche">Sanduiche</option>
+                                    <option value="bebida">Bebida</option>
+                                    <option value="acompanhamento">Acompanhamento</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <select class="custom-select" id="artigoResul">
+                                    <option value="Big Mac®">Big Mac®</option>
+                                    <option value="Big Tasty®">Big Tasty®</option>
+                                    <option value="CBO®">CBO®</option>
+                                    <option value="Filet-o-Fish®">
+                                        Filet-o-Fish®
+                                    </option>
+                                    <option value="McVeggie">McVeggie</option>
+                                    <option value="Double Cheeseburger">Double Cheeseburger</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 mt-3">
+                                <h6>Pedido Especial:</h6>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-12">
+                                <select class="custom-select" id="artigoEsp">
+                                    <option value="">Normal</option>
+                                    <option value="Sem Molhos">Sem Molhos</option>
+                                    <option value="Sem Ketchup">Sem Ketchup</option>
+                                    <option value="Sem Pickle">Sem Pickle</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1" style="max-width: 3.333333%;"></div>
+                    <div class="col-sm-3">
+                        <button type="button" class="btn btn-primary h-100"
+                            style="width: 130%; background-color: black;" onclick="addOrder()">Adicionar
+                            Produto</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 p-0 tableFixHead">
+                        <table class="table" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="width: 33%;"></th>
+                                    <th scope="col" style="width: 33%;">Artigo</th>
+                                    <th scope="col" style="width: 33%;">Extra</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 p-0">
+                        <button type="button" class="btn btn-primary mt-3 w-100" style="background-color: black;"
+                            onclick="finalPedido()">Finalizar
+                            Pedido</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tab-pane fade show" id="cozinha-tab-content" role="tabpanel" aria-labelledby="cozinha-tab">
+            <div class="container p-3">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2>Serviços de cozinha</h2>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 9%;">
+                    <div class="col-sm-4">
+                        <button type="button" id="botaoTodos" class="btn btn-primary btn-lg mt-3 w-100"
+                            style="height: 128%; background-color: black;"
+                            onclick="mostraTabela('Todos')">Todos<br>0</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <button type="button" id="botaoExtra" class="btn btn-primary btn-lg mt-3 w-100"
+                            style="height: 128%; background-color: black;" onclick="mostraTabela('Com Extra')">Com
+                            Extra<br>0</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <button type="button" id="botaoSemExtra" class="btn btn-primary btn-lg mt-3 w-100"
+                            style="height: 128%; background-color: black;" onclick="mostraTabela('SemExtra')">Sem
+                            extra<br>0</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2 id="idPedido">Id do Pedido:</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2 id="nomeUtil">Nome do Cliente:</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 tableFixHead">
+                        <table class="table" id="myTable2">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50%;">Artigo</th>
+                                    <th style="width: 50%;">Extra</th>
+                                </tr>
+                            </thead>
+                            <tbody id="t2Body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 offset-sm-4">
+                        <button type="button" class="btn btn-primary mt-2 w-100" style="background-color: black;"
+                            onclick="prepPedido()">Pedido
+                            Preparado</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade show" id="pedidosActivos-tab-content" role="tabpanel"
+            aria-labelledby="pedidosActivos-tab">
+            <div class="container p-0">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h2>Tabela de pedidos activos</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-4 p-3">
+                        <h6 style="margin-left: 94px;">Filtro:</h6>
+                    </div>
+                    <div class="col-sm-8 p-2">
+                        <select class="custom-select" id="filtro" onchange="filterTable()">
+                            <option value="Todos">Todos</option>
+                            <option value="Com Extras">Com Extras</option>
+                            <option value="Sem Extras">Sem Extras</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 p-0 tableFixHead">
+                        <table class="table" id="myTable3">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortTable(0)">Id</th>
+                                    <th onclick="sortTable(1)">Nome do cliente</th>
+                                    <th onclick="sortTable(2)">Pedido</th>
+                                </tr>
+                            </thead>
+                            <tbody id="t3Body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="sampleData.js"></script>
+
+    <script>
+
+        /********************
+        * Variáveis Globais *
+        ********************/
+        let id = 1;
+        let orderTodos = [], orderExtra = [], orderSemExtra = [];
+        let order = new Order();
+
+        /**************************************************************
+         * Imprime a tabela dos botões Todos, Com extras e sem extras *
+         * @param order botão a ser impresso                          *
+         *************************************************************/
+        function mostraTabela(order) {
+            let arr = [];
+            if (order == "Todos")
+                arr = orderTodos;
+            else if (order == "Com Extra")
+                arr = orderExtra;
+            else
+                arr = orderSemExtra;
+            orderTodos.splice(0, orderTodos.length);
+            orderExtra.splice(0, orderExtra.length);
+            orderSemExtra.splice(0, orderSemExtra.length);
+
+            $.ajax({
+                type: "GET",
+                url: 'https://apimcd.herokuapp.com/api/orders?filter=%7B%22where%22%3A%7B%22developer%22%3A%22Filipe%20Marques%22%7D%7D',
+                data: order,
+                success: function (msg) {
+                    console.log(msg);
+                    
+                    msg.forEach(element => {
+                        orderTodos.push(new Order(element.nome, element.id, element.produtos,
+                            element.productId, element.finalizado, element.extra));
+                    });
+
+                    console.log(orderTodos);
+                    
+
+                    orderTodos.forEach(function (element) {
+                       debugger
+                        if (element.extra == "true")
+                            orderExtra.push(element);
+                        else
+                            orderSemExtra.push(element);
+
+                    });
+                    /*   for (let i = 0; i < msg.length; i++) {
+                          orderTodos.push(new Order(msg.nome, msg.id, msg.produtos,
+                              msg.productId, msg.finalizado, msg.extra));
+                      }
+  
+                      for (let i = 0; i < orderTodos.length; i++) {
+                          if (orderTodos[i].extra)
+                              orderExtra.push(orderTodos[i]);
+                          else
+                              orderSemExtra.push(orderTodos[i]);
+                      } */
+
+                    actualizaBotoes();
+                    actualizaTabPedidos();
+                    $("#t2Body").replaceWith(`<tbody id="t2Body"></tbody>`);
+                    if (arr.length > 0) {
+                        for (let i = 0; i < arr[0].produtos.length; i++) {
+                            $("#t2Body").append(`<tr>
+                            <td>${arr[0].produtos[i].nome}</td>
+                            <td>${arr[0].produtos[i].extra}</td>
+                            </tr>`);
+                        }
+                        $("#idPedido").replaceWith(`<h2 id="idPedido">Id do Pedido: ${arr[0].id}</h2>`);
+                        $("#nomeUtil").replaceWith(`<h2 id="nomeUtil">Nome do Cliente: ${arr[0].nome}</h2>`);
+                    }
+                    else {
+                        $("#idPedido").replaceWith(`<h2 id="idPedido">Id do Pedido: </h2>`);
+                        $("#nomeUtil").replaceWith(`<h2 id="nomeUtil">Nome do Cliente: </h2>`);
+                    }
+                }
+            });
+
+        }
+
+        /****************************************
+        * Actualiza a tabela de pedidos activos *
+        ****************************************/
+        function actualizaTabPedidos() {
+            let str;
+            $("#t3Body").replaceWith(`<tbody id="t3Body"></tbody>`);
+
+            for (let i = 0; i < orderTodos.length; i++) {
+                str = "";
+                for (let j = 0; j < orderTodos[i].produtos.length; j++) {
+                    str += `${orderTodos[i].prodToString(j)}<br>`;
+                }
+                $("#t3Body").append(`<tr>
+                            <td>${orderTodos[i].id}</td>
+                            <td>${orderTodos[i].nome}</td>
+                            <td>${str}</td>`);
+            }
+        }
+
+        /******************************************************************************************
+        * Actualiza os valores dos botoes Todos os pedidos, pedidos com extra e pedidos sem extra *
+        ******************************************************************************************/
+        function actualizaBotoes() {
+            $("#botaoTodos").replaceWith(`<button type="button" id="botaoTodos" class="btn btn-primary btn-lg mt-3 w-100"
+                            style="height: 128%; background-color: black;"
+                            onclick="mostraTabela('Todos')">Todos<br>${orderTodos.length}</button>`);
+            $("#botaoExtra").replaceWith(`<button type="button" id="botaoExtra" class="btn btn-primary btn-lg mt-3 w-100"
+                            style="height: 128%; background-color: black;" onclick="mostraTabela('Com Extra')">Com Extra<br>${orderExtra.length}</button>`);
+            $("#botaoSemExtra").replaceWith(`<button type="button" id="botaoSemExtra" class="btn btn-primary btn-lg mt-3 w-100"
+                            style="height: 128%; background-color: black;" onclick="mostraTabela('SemExtra')">Sem Extra<br>${orderSemExtra.length}</button>`);
+
+            $("#idPedido").replaceWith(`<h2 id="idPedido">Id do Pedido: </h2>`);
+            $("#nomeUtil").replaceWith(`<h2 id="nomeUtil">Nome do Cliente: </h2>`);
+        }
+
+        /**********************************************************************************
+        * Cria os menus dos tipos de bebida/comida/extras consoante o que for selecionado *
+        **********************************************************************************/
+        function escolheArtigo() {
+            $("#artigoResul").replaceWith(`<select class="custom-select" id="artigoResul"></select>`);
+            let str = $("#inputArtigo").val(), strAux = "";
+            let arr1, arr2;
+            if (str == "sanduiche") {
+                arr1 = productNameSanduichesList;
+                arr2 = productExtraSanduichesList;
+            }
+            else if (str == "bebida") {
+                arr1 = productNameBebidasList;
+                arr2 = productExtraBebidasList;
+            }
+            else
+                arr1 = productNameAcompanhamentosList;
+            for (let i = 0; i < arr1.length; i++)
+                strAux += `<option value="${arr1[i]}">${arr1[i]}</option>`;
+            $("#artigoResul").append(strAux);
+            $("#artigoEsp").replaceWith(`<select class="custom-select" id="artigoEsp">`);
+            strAux = '<option value="">Normal</option>';
+            if (arr2 != undefined) {
+                for (let i = 0; i < arr2.length; i++)
+                    strAux += `<option value="${arr2[i]}">${arr2[i]}</option>`;
+                $("#artigoEsp").append(strAux);
+            }
+            else
+                $("#artigoEsp").replaceWith(`<select disabled value="" class="custom-select" id="artigoEsp">`);
+        }
+
+        /***************************************
+        * Adiciona um producto ao nosso pedido *
+        ***************************************/
+        function addOrder() {
+            let product = order.addProduct($("#artigoResul").val(), $("#artigoEsp").val());
+            orderToTable(product);
+        }
+
+        /*************************************************
+        * Escreve na tabela o produto que foi adicionado *
+        * @param product producto que foi adicionado     *
+        *************************************************/
+        function orderToTable(product) {
+            $("#tBody").append(`<tr id="${product.prodId}-linha">
+                            <td><button type="button" class="btn btn-danger" onclick="deleteOrder(${product.prodId})">Del</button></td>
+                            <td>${product.nome}</td>
+                            <td>${product.extra}</td>
+                            </tr>`);
+
+        }
+
+        /*****************************************************
+        * Apaga o produto do nosso pedido consoante o seu ID *
+        * @param id id do nosso produto                      *
+        *****************************************************/
+        function deleteOrder(id) {
+            let index = order.produtos.map(prod => prod.prodId).indexOf(id);
+            apagaElem(index);
+            $(`#${id}-linha`).replaceWith("");
+        }
+
+        /****************************************************************************
+        * Apaga o elemento do array order                                           *
+        * @param id id do elemento a ser apagado                                    *
+        ****************************************************************************/
+        function apagaElem(id) {
+            let copy = order.produtos.map(object => ({ ...object }));
+            order.produtos.length = 0;
+            for (let i = 0; i < copy.length; i++) {
+                if (i != id)
+                    order.produtos.push(copy[i]);
+            }
+        }
+
+        /********************************************************************************************************
+        * Finaliza o nosso pedido, passando para o nosso array de pedidos e torna possivel criar um pedido novo *
+        ********************************************************************************************************/
+        function finalPedido() {
+            if (order.length == 0 || order.produtos.length == 0)
+                return false;
+            if ($("#inputNome").val() == "") {
+                alert("Por favor insira o seu nome de utilizador");
+                return false;
+            }
+
+            /*  order.setId(id);
+             ++id; */
+            order.nome = $("#inputNome").val();
+            order.finalizado = true;
+
+            for (let i = 0; i < order.produtos.length; i++) {
+                if (order.temExtra(i) && order.finalizado == true) {
+                    order.extra = true;
+                    break;
+                }
+            }
+
+            console.log(order);
+
+
+            $.ajax({
+                type: "POST",
+                url: "https://apimcd.herokuapp.com/api/orders",
+                data: order,
+                success: function (msg) {
+                    console.log('Pedido Adicionado');
+                    order = new Order(msg.nome, msg.id, msg.produtos, msg.productId, msg.finalizado, msg.extra);
+                    orderTodos.push(order);
+                    console.log(msg);
+                    console.log(order);
+
+
+                    if (order.extra == "true")
+                        orderExtra.push(order);
+                    else
+                        orderSemExtra.push(order);
+                    order = new Order();
+                    $("#tBody").replaceWith(`<tbody id="tBody"></tbody>`);
+                    $("#inputNome").val("");
+
+                }
+            });
+            $("#inputArtigo").val("sanduiche");
+            escolheArtigo();
+            actualizaBotoes();
+            actualizaTabPedidos();
+            mostraTabela("Todos");
+        }
+
+        function getDados() {
+            $.ajax({
+                type: "GET",
+                url: 'https://apimcd.herokuapp.com/api/orders?filter=%7B%22where%22%3A%7B%22developer%22%3A%22Filipe%20Marques%22%7D%7D',
+                data: order,
+                success: function (msg) {
+                    msg.forEach(element => {
+                        orderTodos.push(new Order(element.nome, element.id, element.produtos,
+                            element.productId, element.finalizado, element.extra));
+                    });
+
+                    orderTodos.forEach(function (element) {
+                        if (element.extra == "true")
+                            orderExtra.push(element);
+                        else
+                            orderSemExtra.push(element);
+                    });
+
+                    actualizaBotoes();
+                    actualizaTabPedidos();
+                    $("#t2Body").replaceWith(`<tbody id="t2Body"></tbody>`);
+                    if (arr.length > 0) {
+                        for (let i = 0; i < arr[0].produtos.length; i++) {
+                            $("#t2Body").append(`<tr>
+                            <td>${arr[0].produtos[i].nome}</td>
+                            <td>${arr[0].produtos[i].extra}</td>
+                            </tr>`);
+                        }
+                        $("#idPedido").replaceWith(`<h2 id="idPedido">Id do Pedido: ${arr[0].id}</h2>`);
+                        $("#nomeUtil").replaceWith(`<h2 id="nomeUtil">Nome do Cliente: ${arr[0].nome}</h2>`);
+                    }
+                    else {
+                        $("#idPedido").replaceWith(`<h2 id="idPedido">Id do Pedido: </h2>`);
+                        $("#nomeUtil").replaceWith(`<h2 id="nomeUtil">Nome do Cliente: </h2>`);
+                    }
+                }
+            });
+
+        }
+        /*******************************************************
+         * Indica se algum dos produtos desse pedido tem extra *
+         * @param order pedido                                 *
+         * @return se tem ou não extra                         *
+         ******************************************************/
+        function temExtraTodos(order) {
+            for (let i = 0; i < order.produtos.length; i++) {
+                if (order.temExtra(i))
+                    return true;
+            }
+            return false;
+        }
+
+        /***************************************************
+        * Retira o nosso último pedido da lista de pedidos *
+        ***************************************************/
+        function prepPedido() {
+            if (orderTodos.length <= 0)
+                return false;
+            else {
+                let id = orderTodos[0].id;
+                $.ajax({
+                    type: "DELETE",
+                    url: "https://apimcd.herokuapp.com/api/orders/" + id,
+                    data: order,
+                    success: function (msg) {
+                        console.log('Pedido Preparado');
+                        if (msg.extra)
+                            orderExtra.shift();
+                        else
+                            orderSemExtra.shift();
+
+                        orderTodos.shift();
+
+                        actualizaBotoes();
+                        actualizaTabPedidos();
+                        limpaTabela();
+                    }
+                });
+            }
+
+        }
+
+        /*****************************************
+        * Limpa a tabela dos servicos de cozinha *
+        *****************************************/
+        function limpaTabela() {
+            $("#t2Body").replaceWith(`<tbody id="t2Body"></tbody>`);
+        }
+
+        /**********************************************************
+        * Filters the table or by Todos or Com Extra or Sem Extra *
+        **********************************************************/
+        function filterTable() {
+            // Declare variables 
+            let input, table, tr, td, i, txtValue;
+            input = $("#filtro").val();
+            table = document.getElementById("myTable3");
+            tr = table.getElementsByTagName("tr");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[2];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (input == "Com Extras") {
+                        if (txtValue.indexOf(":") > -1) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                    else if (input == "Sem Extras") {
+                        if (txtValue.indexOf(":") <= -1) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                    else
+                        tr[i].style.display = "";
+                }
+            }
+        }
+
+        /**********************************************************************************
+        * Sorts the table by clicking the headers alternating by ascending and descending *
+        **********************************************************************************/
+        function sortTable(n) {
+            let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("myTable3");
+            switching = true;
+            // Set the sorting direction to ascending:
+            dir = "asc";
+            /* Make a loop that will continue until
+            no switching has been done: */
+            while (switching) {
+                // Start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+                /* Loop through all table rows (except the
+                first, which contains table headers): */
+                for (i = 1; i < (rows.length - 1); i++) {
+                    // Start by saying there should be no switching:
+                    shouldSwitch = false;
+                    /* Get the two elements you want to compare,
+                    one from current row and one from the next: */
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+                    /* Check if the two rows should switch place,
+                    based on the direction, asc or desc: */
+                    if (dir == "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            // If so, mark as a switch and break the loop:
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            // If so, mark as a switch and break the loop:
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    /* If a switch has been marked, make the switch
+                    and mark that a switch has been done: */
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    // Each time a switch is done, increase this count by 1:
+                    switchcount++;
+                } else {
+                    /* If no switching has been done AND the direction is "asc",
+                    set the direction to "desc" and run the while loop again. */
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+
+    </script>
+</body>
+
+</html>
